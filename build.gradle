@@ -1,0 +1,92 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE"
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.15"
+    }
+}
+
+version "0.1"
+group "example"
+
+apply plugin:"io.spring.dependency-management"
+apply plugin:"com.github.johnrengelman.shadow"
+apply plugin:"application"
+apply plugin:"java"
+apply plugin:"net.ltgt.apt-eclipse"
+apply plugin:"net.ltgt.apt-idea"
+
+// spock
+apply plugin: "groovy"
+
+sourceCompatibility = 1.10
+targetCompatibility = 1.10
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "io.micronaut:micronaut-bom:$micronautVersion"
+    }
+}
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:1.18.4"
+    annotationProcessor "org.projectlombok:lombok:1.18.4"
+    
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+    compile "io.micronaut:micronaut-discovery-client"
+    compile "io.micronaut:micronaut-http-client"
+    compile "io.micronaut:micronaut-http-server-netty"
+    compile "io.micronaut:micronaut-inject"
+    compile "io.micronaut:micronaut-management"
+    compile "io.micronaut:micronaut-runtime"
+	  compile "io.micronaut.configuration:micronaut-redis-lettuce"
+
+    compile "ch.qos.logback.contrib:logback-json-classic:0.1.5"
+    compile "ch.qos.logback.contrib:logback-jackson:0.1.5"
+	
+    compile 'com.google.cloud:google-cloud-pubsub:1.55.0'
+
+    annotationProcessor "io.micronaut.configuration:micronaut-openapi" 
+    compile "io.swagger.core.v3:swagger-annotations" 
+
+    compileOnly "io.micronaut:micronaut-inject-java"
+
+    runtime "ch.qos.logback:logback-classic:1.2.3"
+
+    testCompile "junit:junit:4.12"
+    testCompile "com.github.kstyrc:embedded-redis:0.6"
+    // spock
+    testCompile "org.codehaus.groovy:groovy-all:2.5.3"
+    testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+    // end-spock
+    testCompile "io.micronaut:micronaut-inject-java"
+
+    test {
+        jvmArgs('--add-opens', 'java.base/java.lang=ALL-UNNAMED')
+        jvmArgs('--add-opens', 'java.base/java.lang.invoke=ALL-UNNAMED')
+        testLogging {
+            events "PASSED", "STARTED", "FAILED", "SKIPPED"
+        }
+        environment "APP_ENV", "local"
+    }
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1','-Xdebug',"-Xrunjdwp:transport=dt_socket,address=8099,server=y,suspend=n", "-Dmicronaut.environments=local")
+
+mainClassName = "com.masmovil.it.compensator.Application"
+compileJava.options.compilerArgs += '-parameters'
+compileTestJava.options.compilerArgs += '-parameters'

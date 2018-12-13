@@ -1,0 +1,187 @@
+# IMPORTANT PREREQUISITES
+#
+# • "CircleCI" user needs to be created on AWS with the following policies attached:
+#   - AmazonEC2ContainerRegistryPowerUser
+#   - AmazonS3ReadOnlyAccess
+#
+# • Following environment variables need to be set on CircleCI
+#   - DOCKER_REGISTRY_URL
+#   - KUBERNETES_CONFIG_PASSWORD_DEV
+#   - KUBERNETES_CONFIG_PASSWORD_CANARY
+#   - KUBERNETES_CONFIG_PASSWORD_PROD
+#   - AWS_ACCESS_KEY_ID
+#   - AWS_SECRET_ACCESS_KEY
+#
+# • Kubernetes cluster needs to have been created
+# • ~/.kube/config needs to have been put into a S3 bucket (KUBERNETES_CONFIG_STORE)
+
+
+
+# -----------------------------------------------------------
+# Shared config definition
+# -----------------------------------------------------------
+
+sharedEnvironment: &sharedEnvironment
+  environment:
+    KUBERNETES_SERVICE_NAME: ticketing-api
+    MICRONAUT_PROFILES_ACTIVE: test
+    SERVICES_TICKETING_BASEPATH: https://masmovil-test-staging.apigee.net/masmovil/v1/ticketing
+    SERVICES_SECURITY_BASEPATH: https://masmovil-test-staging.apigee.net/masmovil/v1/ticketing
+
+sharedConfig: &sharedConfig
+  docker:
+    # custom image
+    - image: yoigo/circleci:java-10-jdk
+  <<: *sharedEnvironment
+
+
+# -----------------------------------------------------------
+# Jobs definition
+# -----------------------------------------------------------
+version: 2
+jobs:
+  dependencies:
+    <<: *sharedConfig
+    steps:
+      - checkout
+      - run:
+          name: Get deployment scripts
+          command: make continuous-deployment-scripts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - deployment
+  gradle_build:
+    <<: *sharedConfig
+    resource_class: large
+    steps:
+      - checkout
+      - run:
+          name: Get deployment scripts
+          command: make continuous-deployment-scripts
+      - attach_workspace:
+          at: .
+      - run:
+          name: Configure Gradle credentials
+          command: ./deployment/configure-gradle-credentials.sh
+      - restore_cache:
+          key: gradle-{{ checksum "build.gradle" }}
+      - run:
+          name: Configure Gradle credentials
+          command: ./deployment/configure-gradle-credentials.sh
+      - run:
+          name: Gradle build
+          command: ./gradlew build --no-daemon --max-workers 2
+      - save_cache:
+           key: gradle-{{ checksum "build.gradle" }}
+           paths:
+             - ~/.gradle
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+            - deployment
+            - target       
+  
+
+  # ###############################
+  #   BUILD DOCKER IMAGE          #
+  # ###############################
+
+  build_docker_image:
+    docker:
+      - image: yoigo/circleci:docker-17.10.0-ce-git-gcloud
+    <<: *sharedEnvironment
+    steps:
+      - checkout
+      - run:
+          name: Get deployment scripts
+          command: make continuous-deployment-scripts
+      - setup_remote_docker
+      
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/app.tar
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/app.tar | true
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build docker image
+          command: make ARGS="--rm=false" build-docker-image
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/app.tar ${KUBERNETES_SERVICE_NAME}
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/app.tar
+      - run:
+          name: Push docker image
+          command: ./deployment/push-docker-image-to-aws-ecr.sh
+      - persist_to_workspace:
+          root: .
+          paths:
+            - deployment
+            - build
+            - target
+
+  deploy_k8s:
+    docker:
+      - image: yoigo/circleci:docker-17.10.0-ce-git-gcloud
+    <<: *sharedEnvironment
+    steps:
+      - checkout
+      - run:
+          name: Get deployment scripts
+          command: make continuous-deployment-scripts
+      - attach_workspace:
+          at: .
+      - run:
+          name: Deploy to K8S
+          command: ./deployment/deploy-2-k8s.sh
+
+# -----------------------------------------------------------
+# Workflows definition
+# -----------------------------------------------------------
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - dependencies:
+          context: transformacion-front
+          filters:
+            tags:
+              only: /.*/
+      - gradle_build:
+          context: transformacion-front
+          requires:
+            - dependencies
+          filters:
+            tags:
+              only: /.*/              
+
+      # Build Docker Image
+      - build_docker_image:
+          context: transformacion-front
+          filters:
+            tags:
+              only: /.*/
+          requires:
+            - gradle_build
+
+      # Deployments
+      - deploy_k8s:
+          context: transformacion-front
+          requires:
+            - build_docker_image
+          filters:
+            tags:
+              only: /.*/
