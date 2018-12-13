@@ -12,7 +12,7 @@ import com.masmovil.it.compensator.model.contentful.Model;
 @Client("${contentful.client.id}")
 public interface ContentfulClient {
 
-  @Get("/${contentful.method.content}/${contentful.model.ticketing}")
+  @Get("/${contentful.method.content}/${contentful.model.compensator}")
   public Single<Model> getSubcategoryData(@NotBlank @QueryValue String subcategory);
 
 }

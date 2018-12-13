@@ -1,6 +1,6 @@
 micronaut:
     application:
-        name: ticketing-api
+        name: compensator-api
     router:
         static-resources:
             swagger:
@@ -11,7 +11,7 @@ micronaut:
 redis:
     type: pool
     uri: redis://${redis.host:172.17.0.2}:${redis.port:6379}/${redis.database:11}
-    masterName: ticketingmaster
+    masterName: compensatormaster
     caches:
         salesforcetoken:
             maximumSize: 1
@@ -23,7 +23,7 @@ redis:
             maximumSize: 1
 
 # Redis keys prefix
-redisKeysPrefix: ${redis.keys.prefix:ticketing}-${app.env:local}|
+redisKeysPrefix: ${redis.keys.prefix:compensator}-${app.env:local}|
 
 # Health check
 endpoints:
@@ -84,4 +84,4 @@ contentful:
     method:
         content: content
     model:
-        ticketing: ticketing
+        compensator: compensator

@@ -44,8 +44,8 @@ spec:
             value: {{ .Values.environment }}
           - name: TRACK
             value: {{ .Values.environment }}
-          - name: SERVICES_TICKETING_BASEPATH
-            value: {{ .Values.endpoints.ticketing }}
+          - name: SERVICES_COMPENSATOR_BASEPATH
+            value: {{ .Values.endpoints.compensator }}
           - name: SERVICES_SECURITY_BASEPATH
             value: {{ .Values.endpoints.security }}
           - name: REDIS_KEYS_PREFIX

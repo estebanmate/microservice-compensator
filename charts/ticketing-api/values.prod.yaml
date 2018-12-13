@@ -19,11 +19,11 @@ resources:
     cpu: 100m
     memory: 512Mi
 endpoints:
-  ticketing: https://masmovil-prod-prod.apigee.net/masmovil/v1
+  compensator: https://masmovil-prod-prod.apigee.net/masmovil/v1
   security: https://masmovil-prod-prod.apigee.net/masmovil/v1
   frontendContent: http://ms-frontend-content
 config:
-  keysPrefix: ticketing
+  keysPrefix: compensator
   redis:
     host: redis
     port: 6379

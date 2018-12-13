@@ -4,7 +4,7 @@
 replicaCount: 2
 environment: dev
 image:
-  repository: eu.gcr.io/transformation-it/ticketing-api
+  repository: eu.gcr.io/transformation-it/compensator-api
   tag: latest
   pullPolicy: IfNotPresent
 service:
@@ -19,7 +19,7 @@ disruptionbudget:
 ingress:
   enabled: true
   basefqdn: ovid-project.com
-  basepath: /ticketing
+  basepath: /compensator
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
@@ -38,14 +38,14 @@ resources:
 auth:
   secretName: basic-auth
 endpoints:
-  ticketing: https://masmovil-test-staging.apigee.net/masmovil/v1
+  compensator: https://masmovil-test-staging.apigee.net/masmovil/v1
   security: https://masmovil-test-staging.apigee.net/masmovil/v1
   frontendContent: http://ms-frontend-content.ittransfront-master
 sentry:
    dsn: https://ee7639e246c243f7be9a62f513f9b0de:de931c92d0c545fba18d47a6674d07b1@sentry.monitoring.thor-dev.com/12
-   project: ticketing-api
+   project: compensator-api
 config:
-  keysPrefix: ticketing
+  keysPrefix: compensator
   redis:
     host: redis.ittransfront-master
     port: 6379

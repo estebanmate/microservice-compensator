@@ -1,2 +1,2 @@
-# microservice-ticketing
-A microservice for ticketing and salesforce integration
+# microservice-compensator
+A microservice for ticketing and TMS integration

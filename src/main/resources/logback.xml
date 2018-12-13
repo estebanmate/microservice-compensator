@@ -7,7 +7,7 @@
     </appender>
 
     <appender name="json" class="ch.qos.logback.core.ConsoleAppender">
-	    <layout class="com.masmovil.it.ticketing.util.CustomJsonLayout">
+	    <layout class="com.masmovil.it.compensator.util.CustomJsonLayout">
 	        <jsonFormatter
 	            class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
 	            <prettyPrint>false</prettyPrint>
@@ -18,7 +18,7 @@
 	    </layout>
 	</appender>
 
-    <logger name="com.masmovil.it.ticketing.filter" level="info" additivity="false">
+    <logger name="com.masmovil.it.compensator.filter" level="info" additivity="false">
         <appender-ref ref="json" />
     </logger>
 

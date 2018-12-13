@@ -23,10 +23,10 @@
 
 sharedEnvironment: &sharedEnvironment
   environment:
-    KUBERNETES_SERVICE_NAME: ticketing-api
+    KUBERNETES_SERVICE_NAME: compensator-api
     MICRONAUT_PROFILES_ACTIVE: test
-    SERVICES_TICKETING_BASEPATH: https://masmovil-test-staging.apigee.net/masmovil/v1/ticketing
-    SERVICES_SECURITY_BASEPATH: https://masmovil-test-staging.apigee.net/masmovil/v1/ticketing
+    SERVICES_COMPENSATOR_BASEPATH: https://masmovil-test-staging.apigee.net/masmovil/v1/compensator
+    SERVICES_SECURITY_BASEPATH: https://masmovil-test-staging.apigee.net/masmovil/v1/compensator
 
 sharedConfig: &sharedConfig
   docker:
