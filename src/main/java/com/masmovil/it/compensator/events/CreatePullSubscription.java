@@ -57,8 +57,8 @@ public class CreatePullSubscription {
               subscriptionName, topicName, PushConfig.getDefaultInstance(), 0);
     } catch (ApiException e) {
       // example : code = ALREADY_EXISTS(409) implies subscription already exists
-      System.out.print(e.getStatusCode().getCode());
-      System.out.print(e.isRetryable());
+      System.out.println("Code: ["+e.getStatusCode().getCode()+"]");
+      System.out.println("Retry: ["+e.isRetryable()+"]");
     }
 
     System.out.printf(

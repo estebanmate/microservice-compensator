@@ -83,13 +83,11 @@ public class EventService {
       topicAdminClient.createTopic(topic);
     } catch (ApiException e) {
       // example : code = ALREADY_EXISTS(409) implies topic already exists
-      System.out.print(e.getStatusCode().getCode());
-      System.out.print(e.isRetryable());
+      return Single.just("Code: ["+e.getStatusCode().getCode()+"] Retry: ["+e.isRetryable()+"]");
     } catch (IOException e1) {
       e1.printStackTrace();
     }
 
-    System.out.printf("Topic %s:%s created.\n", topic.getProject(), topic.getTopic());
     return Single.just(String.format("Topic %s:%s created.", topic.getProject(), topic.getTopic()));
   }
 
