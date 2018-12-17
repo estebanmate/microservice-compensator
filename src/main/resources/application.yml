@@ -7,24 +7,6 @@ micronaut:
                 paths: classpath:META-INF/swagger
                 mapping: /swagger/**
 
-# Redis Cache
-redis:
-    type: pool
-    uri: redis://${redis.host:172.17.0.2}:${redis.port:6379}/${redis.database:11}
-    masterName: compensatormaster
-    caches:
-        salesforcetoken:
-            maximumSize: 1
-        salesforcequery:
-            maximumSize: 20
-        salesforcemetadata:
-            maximumSize: 1
-        updatestatus:
-            maximumSize: 1
-
-# Redis keys prefix
-redisKeysPrefix: ${redis.keys.prefix:compensator}-${app.env:local}|
-
 # Health check
 endpoints:
   health:
@@ -34,41 +16,15 @@ endpoints:
 refresh:
     updateTimeFormat: yyyy-MM-dd HH:mm:ss
 
-# SalesForce Token
-token:
-    api-url: https://test.salesforce.com/services/oauth2
-    endpoint: token
-    grant-type: password
-    client-id: ${salesforce.client.id}
-    client-secret: ${salesforce.client.secret}
-    username: ${salesforce.username}
-    password: ${salesforce.password}
+# TMS APIs
+tms:
+    api-url: https://api.qvantel.com/masmovil
+    version: V3
+    entity: revenue
+    endpoint-creditnote: subscriptions-apply-credit-note
+    endpoint-fat: subscriptions-apply-fat    
 
-salesforce:
-    clientnumber-header: X-Customer-ID
-    api-url: https://masmovil--TESTTKT01.cs102.my.salesforce.com
-    version: services/data/v44.0
-    query: query
-    categories-query: SELECT Name,Id,SamanageESD__ParentId__c,SamanageESD__ParentId__r.Name,SamanageESD__ServiceProvider__c,SamanageESD__ServiceProvider__r.Name,SamanageESD__ServiceProvider__r.TKT_MP_TiposCaso__c,TKT_T_CodigoVista__c,TKT_MP_ColasPosibles__c,TKT_C_ValidoMovil__c,TKT_C_ValidoFijo__c From SamanageESD__Category__c Where (SamanageESD__ServiceProvider__r.TKT_C_VisibleFrontal__c=true And SamanageESD__ParentId__r.TKT_C_VisibleFrontal__c=true And TKT_C_VisibleFrontal__c=true) Or (SamanageESD__ParentId__c=null And TKT_C_VisibleFrontal__c=true And SamanageESD__ServiceProvider__r.TKT_C_VisibleFrontal__c=true)
-    tickets-querybyclient: SELECT Id, CaseNumber, TKT_T_NumeroCliente__c, TKT_PH_Suscripcion__c, SamanageESD__RecordType__c, SamanageESD__ServiceProvider__r.Name,SamanageESD__Category__r.Name,SamanageESD__SubCategory__r.Name, SamanageESD__Assignee_Name__c, SamanageESD__OwnerName__c, CreatedDate, Status, SamanageESD__hasComments__c, Description, LastModifiedDate From Case Where TKT_T_NumeroCliente__c='%s'
-    tickets-querybysubscription: SELECT Id, CaseNumber, TKT_T_NumeroCliente__c, TKT_PH_Suscripcion__c, SamanageESD__RecordType__c, SamanageESD__ServiceProvider__r.Name,SamanageESD__Category__r.Name,SamanageESD__SubCategory__r.Name, SamanageESD__Assignee_Name__c, SamanageESD__OwnerName__c, CreatedDate, Status, SamanageESD__hasComments__c, Description, LastModifiedDate From Case Where TKT_PH_Suscripcion__c='%s'
-    queues-query: SELECT Name,Id,DeveloperName From Group Where type='Queue'
-    ticket: sobjects/Case
-    composite: composite/
-    composite-ticket-comments:
-        queries:
-            one:
-                order: 1
-                method: GET
-                url: /services/data/v44.0/query/?q=select+id,SamanageESD__Case__c+from+SamanageESD__SecureFeed__c+where+SamanageESD__Case__c='%s'
-                referenceId: secureFeed
-            two:
-                order: 2
-                method: GET
-                url: /services/data/v44.0/query/?q=select+Id,Body,CreatedDate,LastModifiedDate,ParentId,Visibility+from+FeedItem+where+ParentId+in+('@{secureFeed.records[0].SamanageESD__Case__c}','@{secureFeed.records[0].Id}')+and+Type='TextPost'
-                referenceId: comments
-    metadata: describe/
-
+# Masmovil Configuration
 masmovil:
     header:
         xCorrelationId: X-Correlation-ID
@@ -77,11 +33,3 @@ masmovil:
         data: data
         path: path
         methodName: methodName
-
-contentful:
-    client:
-        id: ${frontend.content.service.host:`https://api.dev.ovid-project.com/frontend-content`}
-    method:
-        content: content
-    model:
-        compensator: compensator

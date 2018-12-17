@@ -3,7 +3,6 @@ package com.masmovil.it.compensator.model;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.masmovil.it.compensator.model.salesforce.Comment;
 
 import java.util.List;
 import java.util.Map;
@@ -183,7 +182,5 @@ public class Ticket {
 
   @JsonAlias({ "commentsNumber", "SamanageESD__hasComments__c" })
   private int commentsNumber;
-
-  private List<Comment> comments;
 
 }
