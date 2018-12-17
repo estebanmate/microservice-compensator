@@ -8,7 +8,7 @@ import com.masmovil.it.compensator.client.tms.TmsClient;
 import com.masmovil.it.compensator.model.creditNoteResponse;
 
 @Singleton
-public class TmsService {
+public class EventService {
 
   protected final TmsClient tmsClient;
 
@@ -16,7 +16,7 @@ public class TmsService {
    * Constructor.
    * @param tmsClient Injected tmsClient
    */
-  public TmsService(TmsClient tmsClient) {
+  public EventService(TmsClient tmsClient) {
     this.tmsClient = tmsClient;
   }
   

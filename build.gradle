@@ -59,6 +59,8 @@ dependencies {
     annotationProcessor "io.micronaut.configuration:micronaut-openapi" 
     compile "io.swagger.core.v3:swagger-annotations" 
 
+    compile "fr.brouillard.oss:jgitver:0.8.6"
+    
     compileOnly "io.micronaut:micronaut-inject-java"
 
     runtime "ch.qos.logback:logback-classic:1.2.3"

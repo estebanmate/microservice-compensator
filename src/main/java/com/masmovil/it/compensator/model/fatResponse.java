@@ -11,7 +11,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Ticket {
+public class fatResponse {
   @JsonAlias({ "Id", "id" })
   private String id;
 
