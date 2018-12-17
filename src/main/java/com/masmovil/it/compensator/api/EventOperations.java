@@ -9,8 +9,8 @@ public interface EventOperations {
   @Get("/")
   public Single<String> getEvents();
 
-  @Post("/")
-  public Single<String> pushEvent(String id);
+  @Post("/{event}")
+  public Single<String> pushEvent(String event);
 
   @Post("/topic/{idTopic}")
   public Single<String> createTopic(String idTopic);
