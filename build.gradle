@@ -87,7 +87,7 @@ shadowJar {
     mergeServiceFiles()
 }
 
-run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1','-Xdebug',"-Xrunjdwp:transport=dt_socket,address=8099,server=y,suspend=n", "-Dmicronaut.environments=local")
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1','-Xdebug',"-Xrunjdwp:transport=dt_socket,address=8099,server=y,suspend=n", "-Dmicronaut.environments=local" )
 
 mainClassName = "com.masmovil.it.compensator.Application"
 compileJava.options.compilerArgs += '-parameters'

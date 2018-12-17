@@ -18,4 +18,7 @@ public interface EventOperations {
   @Post("/topic/subscription/{idTopic}")
   public Single<String> subscribeTopic(String idTopic);
 
+  @Post("/topic/unsubscription/{idTopic}")
+  public Single<String> unsubscribeTopic(String idTopic);
+
 }

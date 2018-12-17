@@ -22,7 +22,7 @@ class TmsControllerSpec extends Specification {
 	  when: "Apply a Credit Note called"
     HttpResponse<String> response = client
         .toBlocking()
-        .exchange(POST('/revenue/subscriptions-apply-credit-note/00G58000000xs38EAA',''), String.class)
+        .exchange(POST('/revenue/credit_note/00G58000000xs38EAA',''), String.class)
     then:
     response.body.get() == "OK";
 	}
@@ -31,7 +31,7 @@ class TmsControllerSpec extends Specification {
     when: "Apply a FAT called"
     HttpResponse<String> response = client
         .toBlocking()
-    .exchange(POST('/revenue/subscriptions-apply-fat/00G58000000xs38EAA',''), String.class)
+    .exchange(POST('/revenue/fat/00G58000000xs38EAA',''), String.class)
     then:
     response.body.get() == "OK";
   }

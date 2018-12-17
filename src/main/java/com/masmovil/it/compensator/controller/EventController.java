@@ -5,62 +5,40 @@ import io.micronaut.http.annotation.Controller;
 import io.reactivex.Single;
 
 import com.masmovil.it.compensator.api.EventOperations;
-import com.masmovil.it.compensator.api.TmsOperations;
-import com.masmovil.it.compensator.service.TmsService;
+import com.masmovil.it.compensator.service.EventService;
 
 @Controller("/event")
 public class EventController implements EventOperations {
 
-  private final TmsService tmsService;
+  private final EventService eventService;
 
-  public EventController(TmsService tmsService) {
-    this.tmsService = tmsService;
-  }
-
-  /**
-   * Apply credit note to subscription
-   *
-   * @param id id of the ticket.
-   * @return A ticket.
-   */
-  @Override
-  public Single<String> creditNote(String id) {
-    return tmsService.creditNote(id);
-  }
-
-  /**
-   * Apply fat to subcription
-   *
-   * @param id id of the ticket.
-   * @return A ticket.
-   */
-  @Override
-  public Single<String> fat(String id) {
-    return tmsService.fat(id);
+  public EventController(EventService eventService) {
+    this.eventService = eventService;
   }
 
   @Override
   public Single<String> getEvents() {
-    // TODO Auto-generated method stub
-    return null;
+    return eventService.getEvents();
   }
 
   @Override
-  public Single<String> pushEvent(String id) {
-    // TODO Auto-generated method stub
-    return null;
+  public Single<String> pushEvent(String event) {
+    return eventService.pushEvent(event);
   }
 
   @Override
   public Single<String> createTopic(String idTopic) {
-    // TODO Auto-generated method stub
-    return null;
+    return eventService.createTopic(idTopic);
   }
 
   @Override
   public Single<String> subscribeTopic(String idTopic) {
-    // TODO Auto-generated method stub
-    return null;
+    return eventService.subscribeTopic(idTopic);
+  }
+
+  @Override
+  public Single<String> unsubscribeTopic(String idTopic) {
+    return eventService.unsubscribeTopic(idTopic);
   }
 
 }
