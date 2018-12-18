@@ -34,7 +34,7 @@ public class EventController implements EventOperations {
   }
 
   @Override
-  public Single<String> subscribeTopic() {
+  public String subscribeTopic() {
     return eventService.subscribeTopic();
   }
 

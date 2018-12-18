@@ -133,7 +133,7 @@ public class EventService {
       topicAdminClient.createTopic(topic);
     } catch (ApiException e) {
       // example : code = ALREADY_EXISTS(409) implies topic already exists
-      return Single.just("Code: [" + e.getStatusCode().getCode() + "] Retry: [" + e.isRetryable() + "]");
+      return Single.just("Topic Code: [" + e.getStatusCode().getCode() + "] Topic Retry: [" + e.isRetryable() + "]");
     } catch (IOException e1) {
       e1.printStackTrace();
     }
@@ -142,7 +142,9 @@ public class EventService {
   }
 
   @SuppressWarnings("unused")
-  public Single<String> subscribeTopic() {
+  public String subscribeTopic() {
+//    return "Project: ["+projectId+"] Topic: : [" + topicId + "] Subscription: [" + subscriptionId + "]";
+    System.out.println("Project: ["+projectId+"] Topic: : [" + topicId + "] Subscription: [" + subscriptionId + "]");
     ProjectTopicName topicName = ProjectTopicName.of(projectId, topicId);
 
     // Create a new subscription
@@ -155,13 +157,14 @@ public class EventService {
           PushConfig.getDefaultInstance(), 0);
     } catch (ApiException e) {
       // example : code = ALREADY_EXISTS(409) implies subscription already exists
-      return Single.just("Code: [" + e.getStatusCode().getCode() + "] Retry: [" + e.isRetryable() + "]");
+      return "Project: ["+projectId+"] Topic: : [" + topicId + "] Subscription: [" + subscriptionId + "]";
+      //return "Code: [" + e.getStatusCode().getCode() + "] Retry: [" + e.isRetryable() + "]";
     } catch (IOException e1) {
       e1.printStackTrace();
     }
 
-    return Single.just(String.format("Subscription %s:%s created.\n", subscriptionName.getProject(),
-        subscriptionName.getSubscription()));
+    return String.format("Subscription %s:%s created.\n", subscriptionName.getProject(),
+        subscriptionName.getSubscription());
   }
 
   public Single<String> unsubscribeTopic() {
