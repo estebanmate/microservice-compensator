@@ -1,5 +1,7 @@
 package com.masmovil.it.compensator.api;
 
+import java.util.List;
+
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import io.reactivex.Single;
@@ -10,15 +12,15 @@ public interface EventOperations {
   public Single<String> getEvents();
 
   @Post("/{event}")
-  public Single<String> pushEvent(String event);
+  public Single<String> pushEvent(List<String> event);
 
   @Post("/topic/{idTopic}")
   public Single<String> createTopic(String idTopic);
 
-  @Post("/topic/subscription/{idTopic}")
-  public Single<String> subscribeTopic(String idTopic);
+  @Post("/topic/subscription}")
+  public Single<String> subscribeTopic();
 
-  @Post("/topic/unsubscription/{idTopic}")
-  public Single<String> unsubscribeTopic(String idTopic);
+  @Post("/topic/unsubscription")
+  public Single<String> unsubscribeTopic();
 
 }
